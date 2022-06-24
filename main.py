@@ -1,9 +1,5 @@
 # Modules import section.
-import tkinter
+import tk_helpers
 
-root = tkinter.Tk()
-
-SYS_SCREEN_W = root.winfo_screenwidth()
-SYS_SCREEN_H = root.winfo_screenheight()
-
-print(f"{SYS_SCREEN_W}x{SYS_SCREEN_H}")
+ACTIVE_SCREEN_SIZE = tk_helpers.get_screen_geometry()
+print(ACTIVE_SCREEN_SIZE)
