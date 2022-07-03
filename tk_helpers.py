@@ -1,5 +1,5 @@
 def get_screen_geometry():
-    """Returns active screen resolution as a list."""
+    """Returns active screen resolution."""
     import tkinter
     root = tkinter.Tk()
     root.update_idletasks()
