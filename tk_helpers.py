@@ -1,7 +1,7 @@
 def get_screen_geometry():
     """Returns active screen resolution."""
-    import tkinter
-    root = tkinter.Tk()
+    import tkinter as tk
+    root = tk.Tk()
     root.update_idletasks()
     root.attributes("-fullscreen", True)
     root.state("iconic")
