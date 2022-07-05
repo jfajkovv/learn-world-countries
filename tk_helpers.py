@@ -16,3 +16,11 @@ def get_mouse_click_coor(x, y):
     """Fetch mouse click coordinates."""
     coor = f"{x},{y}"
     print(coor)
+
+
+def toggle_fscreen(master):
+    """Switch between fullscreen and windowed modes."""
+    if master.attributes("-fullscreen"):
+        master.attributes("-fullscreen", False)
+    else:
+        master.attributes("-fullscreen", True)
