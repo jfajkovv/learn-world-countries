@@ -10,3 +10,9 @@ def get_screen_geometry():
     screen_geometry = screen_geometry.split('+', 1)[0]
     root.destroy()
     return screen_geometry
+
+
+def get_mouse_click_coor(x, y):
+    """Fetch mouse click coordinates."""
+    coor = f"{x},{y}"
+    print(coor)

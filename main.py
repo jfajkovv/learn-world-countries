@@ -28,4 +28,7 @@ screen.screensize(WORLD_MAP_WIDTH, WORLD_MAP_HEIGHT)
 screen.addshape(WORLD_MAP_IMG)  # Load map img into the program as a turtle shape.
 t_world_map = tl.RawTurtle(screen, shape=WORLD_MAP_IMG)
 
+# Get mouse click coordinates.
+screen.onclick(tk_h.get_mouse_click_coor)
+
 root.mainloop()  # Evoke program's core loop.
