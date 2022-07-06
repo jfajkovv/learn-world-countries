@@ -4,14 +4,18 @@ import tk_helpers as tk_h
 import turtle as tl
 
 # Handy global constants.
-COOR_DATA = "./assets/world_countries_coords.csv"
+#COOR_DATA = "./assets/world_countries_coords.csv"  # Countries coords data file.
 APP_TITLE = "Learn World Countries"
+ROOT_WINDOW = "1280x720"  # Reduce window to 720p after minimising.
+
+# Graphics.
 # https://commons.wikimedia.org/wiki/File:BlankMap-World-large.png
 WORLD_MAP_IMG = "./assets/BlankMap-World-large.gif"  # File exported to .GIF.
 WORLD_MAP_WIDTH = 2800
 WORLD_MAP_HEIGHT = 1400
-#ACTIVE_SCREEN_SIZE = tk_h.get_screen_geometry()
-ROOT_WINDOW = "1280x720"
+# https://www.clipartmax.com/middle/m2i8d3H7N4N4N4K9_pin-2-google-maps-pin-png
+PIN_ICON = "./assets/map-pin-icon.gif"  # File exported to .GIF.
+PIN_VERTICAL_SHIFT = 15  # So it points sharply onto the map.
 
 # Tkinter master application instance.
 root = tk.Tk()
@@ -30,7 +34,7 @@ fscreen_bttn = tk.Button(
 )
 fscreen_bttn.pack(fill=tk.BOTH, side=tk.TOP)
 
-quit_bttn = tk.Button(controls, text="Quit", command=root.destroy)
+quit_bttn = tk.Button(master=controls, text="Quit", command=root.destroy)
 quit_bttn.pack(fill=tk.BOTH, side=tk.TOP)
 
 # This instance is where all my turtles live and play.
@@ -46,6 +50,13 @@ screen.addshape(WORLD_MAP_IMG)  # Load map img into the program as a turtle shap
 t_world_map = tl.RawTurtle(screen, shape=WORLD_MAP_IMG)
 
 # Get mouse click coordinates.
-#screen.onclick(tk_h.get_mouse_click_coor)
+screen.onclick(tk_h.get_tl_mouse_click_coor)
+
+screen.addshape(PIN_ICON)
+t_pin = tl.RawTurtle(screen, shape=PIN_ICON)
+t_pin.hideturtle()
+t_pin.penup()
+t_pin.goto(-12.0,420.0)
+t_pin.showturtle()
 
 root.mainloop()  # Evoke program's core loop.

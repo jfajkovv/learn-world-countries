@@ -1,4 +1,4 @@
-def get_screen_geometry():
+def get_screen_size():
     """Returns active screen resolution."""
     import tkinter as tk
     root = tk.Tk()
@@ -12,8 +12,8 @@ def get_screen_geometry():
     return screen_geometry
 
 
-def get_mouse_click_coor(x, y):
-    """Fetch mouse click coordinates."""
+def get_tl_mouse_click_coor(x, y):
+    """Fetch mouse click coordinates from turtle's screen."""
     coor = f"{x},{y}"
     print(coor)
 
