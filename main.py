@@ -5,17 +5,19 @@ import turtle as tl
 
 # Handy global constants.
 COOR_DATA = "./assets/world_countries_coords.csv"
+APP_TITLE = "Learn World Countries"
 # https://commons.wikimedia.org/wiki/File:BlankMap-World-large.png
 WORLD_MAP_IMG = "./assets/BlankMap-World-large.gif"  # File exported to .GIF.
 WORLD_MAP_WIDTH = 2800
 WORLD_MAP_HEIGHT = 1400
-ACTIVE_SCREEN_SIZE = tk_h.get_screen_geometry()
+#ACTIVE_SCREEN_SIZE = tk_h.get_screen_geometry()
+ROOT_WINDOW = "1280x720"
 
 # Tkinter master application instance.
 root = tk.Tk()
-root.title("Learn World Countries")
-#root.geometry(ACTIVE_SCREEN_SIZE)  # Fit app window to the user's monitor.
-root.attributes("-fullscreen", True)  # Fullscreen mode.
+root.title(APP_TITLE)
+root.geometry(ROOT_WINDOW)
+root.attributes("-fullscreen", True)  # Start in fullscreen mode.
 
 # Control buttons section.
 controls = tk.Frame(master=root)
