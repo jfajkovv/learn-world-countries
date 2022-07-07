@@ -18,9 +18,15 @@ PIN_ICON = "./assets/map-pin-icon.gif"  # File exported to .GIF.
 PIN_VERTICAL_SHIFT = 15  # So it points sharply onto the map.
 
 
+def clear_entry_field():
+    """Resets user input field."""
+    answer_entry.delete(0, tk.END)
+
+
 def get_user_input():
     """Fetches player country answer."""
     print(answer_entry.get())
+    clear_entry_field()
 
 
 # Tkinter master application instance.
@@ -49,9 +55,12 @@ input_frm.pack(side=tk.BOTTOM)
 user_input = tk.StringVar(master=input_frm)
 answer_entry = tk.Entry(master=input_frm, textvariable=user_input, bd=5)
 answer_entry.pack(pady=10, side=tk.LEFT)
+answer_entry.focus_set()
 
 answer_bttn = tk.Button(master=input_frm, text="Answer", command=get_user_input)
 answer_bttn.pack(padx=10, side=tk.LEFT)
+
+root.bind("<Return>", (lambda event: get_user_input()))
 
 # This instance is where all my turtles live and play.
 canvas = tl.ScrolledCanvas(
