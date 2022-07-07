@@ -17,6 +17,12 @@ WORLD_MAP_HEIGHT = 1400
 PIN_ICON = "./assets/map-pin-icon.gif"  # File exported to .GIF.
 PIN_VERTICAL_SHIFT = 15  # So it points sharply onto the map.
 
+
+def get_user_input():
+    """Fetches player country answer."""
+    print(answer_entry.get())
+
+
 # Tkinter master application instance.
 root = tk.Tk()
 root.title(APP_TITLE)
@@ -24,18 +30,28 @@ root.geometry(ROOT_WINDOW)
 root.attributes("-fullscreen", True)  # Start in fullscreen mode.
 
 # Control buttons section.
-controls = tk.Frame(master=root)
-controls.pack(fill=tk.BOTH, side=tk.LEFT)
+controls_frm = tk.Frame(master=root)
+controls_frm.pack(fill=tk.BOTH, side=tk.LEFT)
 
 fscreen_bttn = tk.Button(
-    master=controls,
+    master=controls_frm,
     text="Fullscreen",
     command=lambda: tk_h.toggle_fscreen(master=root)
 )
 fscreen_bttn.pack(fill=tk.BOTH, side=tk.TOP)
 
-quit_bttn = tk.Button(master=controls, text="Quit", command=root.destroy)
+quit_bttn = tk.Button(master=controls_frm, text="Quit", command=root.destroy)
 quit_bttn.pack(fill=tk.BOTH, side=tk.TOP)
+
+input_frm = tk.Frame(master=root)
+input_frm.pack(side=tk.BOTTOM)
+
+user_input = tk.StringVar(master=input_frm)
+answer_entry = tk.Entry(master=input_frm, textvariable=user_input, bd=5)
+answer_entry.pack(pady=10, side=tk.LEFT)
+
+answer_bttn = tk.Button(master=input_frm, text="Answer", command=get_user_input)
+answer_bttn.pack(padx=10, side=tk.LEFT)
 
 # This instance is where all my turtles live and play.
 canvas = tl.ScrolledCanvas(
