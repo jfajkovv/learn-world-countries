@@ -35,8 +35,11 @@ root.title(APP_TITLE)
 root.geometry(ROOT_WINDOW)
 root.attributes("-fullscreen", True)  # Start in fullscreen mode.
 
+top_bar_frm = tk.Frame(master=root)
+top_bar_frm.pack(fill=tk.BOTH, side=tk.TOP)
+
 # Control buttons section.
-controls_frm = tk.Frame(master=root)
+controls_frm = tk.Frame(master=top_bar_frm)
 controls_frm.pack(fill=tk.BOTH, side=tk.LEFT)
 
 fscreen_bttn = tk.Button(
@@ -44,23 +47,31 @@ fscreen_bttn = tk.Button(
     text="Fullscreen",
     command=lambda: tk_h.toggle_fscreen(master=root)
 )
-fscreen_bttn.pack(fill=tk.BOTH, side=tk.TOP)
+fscreen_bttn.pack(fill=tk.BOTH, side=tk.LEFT)
 
-quit_bttn = tk.Button(master=controls_frm, text="Quit", command=root.destroy)
-quit_bttn.pack(fill=tk.BOTH, side=tk.TOP)
+about_bttn = tk.Button(master=controls_frm, text="About")
+about_bttn.pack(fill=tk.BOTH, side=tk.LEFT)
 
-input_frm = tk.Frame(master=root)
-input_frm.pack(side=tk.BOTTOM)
+# User input section.
+input_frm = tk.Frame(master=top_bar_frm)
+input_frm.pack(expand=True, side=tk.LEFT)
 
 user_input = tk.StringVar(master=input_frm)
-answer_entry = tk.Entry(master=input_frm, textvariable=user_input, bd=5)
-answer_entry.pack(pady=10, side=tk.LEFT)
+answer_entry = tk.Entry(master=input_frm, textvariable=user_input, bd=3)
+answer_entry.pack(side=tk.LEFT)
 answer_entry.focus_set()
 
 answer_bttn = tk.Button(master=input_frm, text="Answer", command=get_user_input)
-answer_bttn.pack(padx=10, side=tk.LEFT)
+answer_bttn.pack(side=tk.LEFT, padx=10)
 
 root.bind("<Return>", (lambda event: get_user_input()))
+
+# Exit section.
+exit_frm = tk.Frame(master=top_bar_frm)
+exit_frm.pack(fill=tk.BOTH, side=tk.LEFT)
+
+quit_bttn = tk.Button(master=exit_frm, text="Quit", command=root.destroy)
+quit_bttn.pack(fill=tk.BOTH, side=tk.RIGHT)
 
 # This instance is where all my turtles live and play.
 canvas = tl.ScrolledCanvas(
