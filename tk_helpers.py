@@ -12,7 +12,7 @@ def get_screen_size():
     return screen_geometry
 
 
-def get_tl_mouse_click_coor(x, y):
+def get_tl_mouse_click_coords(x, y):
     """Fetch mouse click coordinates from turtle's screen."""
     coor = f"{x},{y}"
     print(coor)
