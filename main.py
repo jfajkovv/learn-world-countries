@@ -55,6 +55,12 @@ class UserInput(tk.Frame):
     def __init__(self, master):
         super().__init__()
 
+        # User entry prompt.
+        self.answer_entry = tk.Entry(
+            master=self,
+            bd=3
+        ).pack(side=tk.LEFT)
+
 
 class MainApplication(tk.Frame):
     """Application core structure"""
