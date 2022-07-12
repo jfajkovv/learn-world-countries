@@ -1,5 +1,6 @@
 # Load all necessary modules.
 import tkinter as tk
+import tk_helpers as tk_h
 
 # Handy global constants.
 APP_TITLE = "Learn World Countries"
@@ -23,6 +24,12 @@ class Controls(tk.Frame):
             master=self,
             text="Start",
             #command=
+        ).pack(side=tk.LEFT)
+
+        self.fscreen_bttn = tk.Button(
+            master=self,
+            text="Fullscreen",
+            command=lambda: tk_h.toggle_fscreen(master=root)
         ).pack(side=tk.LEFT)
 
 
