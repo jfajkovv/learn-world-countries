@@ -61,6 +61,13 @@ class UserInput(tk.Frame):
             bd=3
         ).pack(side=tk.LEFT)
 
+        # Input confirmation button.
+        self.answer_bttn = tk.Button(
+            master=self,
+            text="Answer",
+            #command=
+        ).pack(side=tk.LEFT, padx=10)
+
 
 class MainApplication(tk.Frame):
     """Application core structure"""
