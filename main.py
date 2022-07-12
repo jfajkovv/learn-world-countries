@@ -19,6 +19,12 @@ class Controls(tk.Frame):
     def __init__(self, master):
         super().__init__()
 
+        self.start_bttn = tk.Button(
+            master=self,
+            text="Start",
+            #command=
+        ).pack(side=tk.LEFT)
+
 
 class MainApplication(tk.Frame):
     """Application core structure"""
