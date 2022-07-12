@@ -42,6 +42,13 @@ class Controls(tk.Frame):
         ).pack(side=tk.LEFT)
 
 
+class SeparatorFrame(tk.Frame):
+    """Additional space between controls and input."""
+
+    def __init__(self, master):
+        super().__init__()
+
+
 class MainApplication(tk.Frame):
     """Application core structure"""
 
@@ -51,10 +58,12 @@ class MainApplication(tk.Frame):
         # Construct GUI components.
         self.top_bar = TopBar(master=self)
         self.controls = Controls(master=self.top_bar)
+        self.separator = SeparatorFrame(master=self.top_bar)
 
         # Place GUI components onto main frame.
         self.top_bar.pack(fill=tk.BOTH, side=tk.TOP)
         self.controls.pack(fill=tk.BOTH, side=tk.LEFT)
+        self.separator.pack(expand=True, side=tk.LEFT)
 
 
 if __name__ == "__main__":
