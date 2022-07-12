@@ -41,6 +41,13 @@ class Controls(tk.Frame):
             #command=
         ).pack(side=tk.LEFT)
 
+        # Exit app button.
+        self.quit_bttn = tk.Button(
+            master=self,
+            text="Quit",
+            command=root.destroy
+        ).pack(side=tk.LEFT)
+
 
 class SeparatorFrame(tk.Frame):
     """Additional space between controls and input."""
