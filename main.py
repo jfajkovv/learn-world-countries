@@ -49,6 +49,13 @@ class SeparatorFrame(tk.Frame):
         super().__init__()
 
 
+class UserInput(tk.Frame):
+    """User's entry field and information."""
+
+    def __init__(self, master):
+        super().__init__()
+
+
 class MainApplication(tk.Frame):
     """Application core structure"""
 
@@ -59,11 +66,13 @@ class MainApplication(tk.Frame):
         self.top_bar = TopBar(master=self)
         self.controls = Controls(master=self.top_bar)
         self.separator = SeparatorFrame(master=self.top_bar)
+        self.input = UserInput(master=self.top_bar)
 
         # Place GUI components onto main frame.
         self.top_bar.pack(fill=tk.BOTH, side=tk.TOP)
         self.controls.pack(fill=tk.BOTH, side=tk.LEFT)
         self.separator.pack(expand=True, side=tk.LEFT)
+        self.input.pack(expand=True, side=tk.LEFT)
 
 
 if __name__ == "__main__":
