@@ -20,16 +20,25 @@ class Controls(tk.Frame):
     def __init__(self, master):
         super().__init__()
 
+        # Quiz start button.
         self.start_bttn = tk.Button(
             master=self,
             text="Start",
             #command=
         ).pack(side=tk.LEFT)
 
+        # Toggle fullscreen mode.
         self.fscreen_bttn = tk.Button(
             master=self,
             text="Fullscreen",
             command=lambda: tk_h.toggle_fscreen(master=root)
+        ).pack(side=tk.LEFT)
+
+        # View application info.
+        self.about_bttn = tk.Button(
+            master=self,
+            text="About",
+            #command=
         ).pack(side=tk.LEFT)
 
 
