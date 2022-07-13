@@ -8,14 +8,7 @@ APP_TITLE = "Learn World Countries"
 ROOT_WINDOW = "1280x720"  # reduce window to 720p after minimising
 
 
-class TopBar(tk.Frame):
-    """Top bar controls aggregator."""
-
-    def __init__(self, master):
-        super().__init__()
-
-
-class Controls(tk.Frame):
+class ControlsBar(tk.Frame):
     """Control buttons sub-frame."""
 
     def __init__(self, master):
@@ -26,58 +19,44 @@ class Controls(tk.Frame):
             master=self,
             text="Start",
             #command=
-        ).pack(side=tk.LEFT)
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-        # Toggle fullscreen mode.
+        # Toggle fullscreen mode button.
         self.fscreen_bttn = tk.Button(
             master=self,
             text="Fullscreen",
             command=lambda: tk_h.toggle_fscreen(master=root)
-        ).pack(side=tk.LEFT)
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-        # View application info.
+        # View application info button.
         self.about_bttn = tk.Button(
             master=self,
             text="About",
             #command=
-        ).pack(side=tk.LEFT)
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Exit app button.
         self.quit_bttn = tk.Button(
             master=self,
             text="Quit",
             command=root.destroy
-        ).pack(side=tk.LEFT)
-
-
-class SeparatorFrame(tk.Frame):
-    """Additional space between controls and input."""
-
-    def __init__(self, master):
-        super().__init__()
-
-
-class UserInput(tk.Frame):
-    """User's entry field and information."""
-
-    def __init__(self, master):
-        super().__init__()
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # User entry prompt.
         self.answer_entry = tk.Entry(
             master=self,
             bd=3
-        ).pack(side=tk.LEFT)
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
 
-        # Input confirmation button.
+        # Entry confirmation button.
         self.answer_bttn = tk.Button(
             master=self,
             text="Answer",
-            #command=
-        ).pack(side=tk.LEFT, padx=10)
+            #command
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
 
-class TlPool(tl.ScrolledCanvas):
+class ScrolledCanvas(tl.ScrolledCanvas):
     """Handy scrolled background container."""
 
     def __init__(self, master):
@@ -91,18 +70,12 @@ class MainApplication(tk.Frame):
         super().__init__()
 
         # Construct GUI components.
-        self.top_bar = TopBar(master=self)
-        self.controls = Controls(master=self.top_bar)
-        self.separator = SeparatorFrame(master=self.top_bar)
-        self.input = UserInput(master=self.top_bar)
-        self.canvas = TlPool(master=root)
+        self.controls_bar = ControlsBar(master=self)
+        self.canvas = ScrolledCanvas(master=self)
 
         # Place GUI components onto main frame.
-        self.top_bar.pack(expand=True, fill=tk.BOTH, side=tk.TOP)
-        self.controls.pack(fill=tk.BOTH, side=tk.LEFT)
-        self.separator.pack(expand=True, side=tk.LEFT)
-        self.input.pack(expand=True, side=tk.LEFT)
-        self.canvas.pack(expand=True, fill=tk.BOTH, side=tk.TOP)
+        self.controls_bar.pack(side=tk.TOP, fill=tk.X)
+        self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
 
 
 if __name__ == "__main__":
