@@ -6,6 +6,9 @@ import turtle as tl
 # Handy global constants.
 APP_TITLE = "Learn World Countries"
 ROOT_WINDOW = "1280x720"  # reduce window to 720p after minimising
+WORLD_COUNTRIES_IMG = "./assets/BlankMap-World-large.gif"
+WORLD_COUNTRIES_WIDTH = 2800
+WORLD_COUNTRIES_HEIGHT = 1400
 
 
 class ControlsBar(tk.Frame):
@@ -63,6 +66,17 @@ class ScrolledCanvas(tl.ScrolledCanvas):
         super().__init__(master)
 
 
+class Screen(tl.TurtleScreen):
+    """Background graphics and turtle aggregator."""
+
+    def __init__(self, cv):
+        super().__init__(cv)
+
+        self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
+        self.addshape(WORLD_COUNTRIES_IMG)
+        t_world_countries = tl.RawTurtle(self, shape=WORLD_COUNTRIES_IMG)
+
+
 class MainApplication(tk.Frame):
     """Application core structure"""
 
@@ -72,6 +86,7 @@ class MainApplication(tk.Frame):
         # Construct GUI components.
         self.controls_bar = ControlsBar(master=self)
         self.canvas = ScrolledCanvas(master=self)
+        self.screen = Screen(cv=self.canvas)
 
         # Place GUI components onto main frame.
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
