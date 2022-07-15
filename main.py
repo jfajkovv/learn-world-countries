@@ -2,6 +2,8 @@
 import tkinter as tk
 import tk_helpers as tk_h
 import turtle as tl
+import pandas as pd
+from random import choice
 
 # Handy global constants.
 APP_TITLE = "Learn World Countries"
@@ -13,6 +15,7 @@ WORLD_COUNTRIES_HEIGHT = 1400
 # https://www.clipartmax.com/middle/m2i8d3H7N4N4N4K9_pin-2-google-maps-pin-png
 PIN_ICON = "./assets/map-pin-icon.gif"  # file exported to .gif
 PIN_STARTING_POSITION = (-180.0,-120.0)
+PIN_VERTICAL_SHIFT = 15  # so it points sharply onto the given country
 
 
 class ControlsBar(tk.Frame):
@@ -28,7 +31,8 @@ class ControlsBar(tk.Frame):
             master=self,
             text="Start",
             command=self.master.start_quiz
-        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        )
+        self.start_bttn.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Toggle fullscreen mode button.
         self.fscreen_bttn = tk.Button(
@@ -68,7 +72,9 @@ class ControlsBar(tk.Frame):
             master=self,
             text="Answer",
             command=self.get_user_input
-        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        )
+        self.answer_bttn.pack(side=tk.LEFT, expand=True, fill=tk.X)
+        self.answer_bttn.config(state="disabled")
 
     def get_user_input(self):
         input_sv = self.answer_entry.get().title()
@@ -116,12 +122,37 @@ class TurtlePin(tl.RawTurtle):
         self.shape(PIN_ICON)
         self.speed("fastest")
         self.penup()
-        self.set_pin(coords=PIN_STARTING_POSITION)
+        self.set_pin(position=PIN_STARTING_POSITION)
         self.speed("slowest")
-        self.showturtle()
 
-    def set_pin(self, coords):
-        self.goto(coords)
+    def set_pin(self, position):
+        xcoor = position[0]
+        ycoor = position[1] + PIN_VERTICAL_SHIFT
+        self.goto(xcoor, ycoor)
+
+
+class DataHandler(object):
+    """This component is responsible for juggling app data."""
+
+    # Countries coords data file.
+    COORDS_DATA_FILE = "./assets/world_countries_coords.csv"
+
+    def __init__(self):
+        self.coords_data = pd.read_csv(DataHandler.COORDS_DATA_FILE)
+        self.all_countries = self.coords_data.country.to_list()
+        self.next_country = self.draw_country(countries=self.all_countries)
+
+    # Randomly pick next country to learn.
+    def draw_country(self, countries):
+        drawn_country = choice(countries)
+        return drawn_country
+
+    # Fetch given country coords.
+    def fetch_country_coords(self, country, data_frame):
+        country_data = data_frame[data_frame.country == country]
+        country_xcoor = country_data.xcoor
+        country_ycoor = country_data.ycoor
+        return (float(country_xcoor), float(country_ycoor))
 
 
 class MainApplication(tk.Frame):
@@ -134,17 +165,34 @@ class MainApplication(tk.Frame):
         self.controls_bar = ControlsBar(master=self)
         self.canvas = ScrolledCanvas(master=self)
         self.screen = Screen(canvas=self.canvas)
+        self.data_handler = DataHandler()
 
         # Place GUI components onto main frame.
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
 
-        self.t_pin = None
+        self.t_pin = TurtlePin(master=self.screen)
 
     def start_quiz(self):
-        self.t_pin = TurtlePin(master=self.screen)
+        self.t_pin.showturtle()
+
+        self.indicate_on_map(
+            country=self.data_handler.next_country,
+            pin=self.t_pin
+        )
+
         self.controls_bar.answer_entry.config(state="normal")
         self.controls_bar.answer_entry.focus_set()
+        self.controls_bar.answer_bttn.config(state="normal")
+
+        self.controls_bar.start_bttn.config(state="disabled")
+
+    def indicate_on_map(self, country, pin):
+        coords = self.data_handler.fetch_country_coords(
+            country=country,
+            data_frame=self.data_handler.coords_data
+        )
+        self.t_pin.set_pin(position=coords)
 
 
 if __name__ == "__main__":
