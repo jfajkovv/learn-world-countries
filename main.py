@@ -21,16 +21,17 @@ PIN_VERTICAL_SHIFT = 15  # so it points sharply onto the given country
 class ControlsBar(tk.Frame):
     """Control buttons sub-frame."""
 
-    def __init__(self, master):
+    def __init__(self, master, countries_map):
         super().__init__()
 
         self.master = master
+        self.countries_map = countries_map
 
         # Quiz start button.
         self.start_bttn = tk.Button(
             master=self,
             text="Start",
-            command=self.master.start_quiz
+            command=self.start_quiz
         )
         self.start_bttn.pack(side=tk.LEFT, expand=True, fill=tk.X)
 
@@ -76,11 +77,29 @@ class ControlsBar(tk.Frame):
         self.answer_bttn.pack(side=tk.LEFT, expand=True, fill=tk.X)
         self.answer_bttn.config(state="disabled")
 
+    def start_quiz(self):
+        self.master.t_pin.showturtle()
+
+        self.countries_map.indicate_on_map(
+            country=self.master.data_handler.next_country,
+            pin=self.master.t_pin
+        )
+
+        self.master.controls_bar.answer_entry.config(state="normal")
+        self.master.controls_bar.answer_entry.focus_set()
+        self.master.controls_bar.answer_bttn.config(state="normal")
+
+        self.master.controls_bar.start_bttn.config(state="disabled")
+
     def get_user_input(self):
         input_sv = self.answer_entry.get().title()
         self.clear_entry_field()
-        print(input_sv)
-#        return input_sv
+
+        country = self.master.data_handler.next_country
+        self.master.data_handler.validate_answer(
+            user_answer=input_sv,
+            correct_answer=country
+        )
 
     def clear_entry_field(self):
         self.answer_entry.delete(0, tk.END)
@@ -93,11 +112,13 @@ class ScrolledCanvas(tl.ScrolledCanvas):
         super().__init__(master)
 
 
-class Screen(tl.TurtleScreen):
+class ScreenMap(tl.TurtleScreen):
     """Background graphics and turtle aggregator."""
 
-    def __init__(self, canvas):
+    def __init__(self, master, canvas):
         super().__init__(canvas)
+
+        self.master = master
 
         # Determine screen dimensions.
         self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
@@ -109,6 +130,13 @@ class Screen(tl.TurtleScreen):
 
         # Fetch and print mouse click coordinates.
         self.onclick(tk_h.get_tl_mouse_click_coords)
+
+    def indicate_on_map(self, country, pin):
+        coords = self.master.data_handler.fetch_country_coords(
+            country=country,
+            data_frame=self.master.data_handler.coords_data
+        )
+        self.master.t_pin.set_pin(position=coords)
 
 
 class TurtlePin(tl.RawTurtle):
@@ -137,10 +165,12 @@ class DataHandler(object):
     # Countries coords data file.
     COORDS_DATA_FILE = "./assets/world_countries_coords.csv"
 
-    def __init__(self):
+    def __init__(self, master):
         self.coords_data = pd.read_csv(DataHandler.COORDS_DATA_FILE)
         self.all_countries = self.coords_data.country.to_list()
         self.next_country = self.draw_country(countries=self.all_countries)
+
+        self.master = master
 
     # Randomly pick next country to learn.
     def draw_country(self, countries):
@@ -154,6 +184,11 @@ class DataHandler(object):
         country_ycoor = country_data.ycoor
         return (float(country_xcoor), float(country_ycoor))
 
+    # Check if the user knows correct country name.
+    def validate_answer(self, user_answer, correct_answer):
+        if user_answer == correct_answer:
+            print(True)
+
 
 class MainApplication(tk.Frame):
     """Application core structure"""
@@ -162,37 +197,17 @@ class MainApplication(tk.Frame):
         super().__init__()
 
         # Construct GUI components.
-        self.controls_bar = ControlsBar(master=self)
+
         self.canvas = ScrolledCanvas(master=self)
-        self.screen = Screen(canvas=self.canvas)
-        self.data_handler = DataHandler()
+        self.screen = ScreenMap(master=self, canvas=self.canvas)
+        self.controls_bar = ControlsBar(master=self, countries_map=self.screen)
+        self.data_handler = DataHandler(master=self)
 
         # Place GUI components onto main frame.
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
 
         self.t_pin = TurtlePin(master=self.screen)
-
-    def start_quiz(self):
-        self.t_pin.showturtle()
-
-        self.indicate_on_map(
-            country=self.data_handler.next_country,
-            pin=self.t_pin
-        )
-
-        self.controls_bar.answer_entry.config(state="normal")
-        self.controls_bar.answer_entry.focus_set()
-        self.controls_bar.answer_bttn.config(state="normal")
-
-        self.controls_bar.start_bttn.config(state="disabled")
-
-    def indicate_on_map(self, country, pin):
-        coords = self.data_handler.fetch_country_coords(
-            country=country,
-            data_frame=self.data_handler.coords_data
-        )
-        self.t_pin.set_pin(position=coords)
 
 
 if __name__ == "__main__":
