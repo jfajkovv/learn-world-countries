@@ -6,11 +6,13 @@ import turtle as tl
 # Handy global constants.
 APP_TITLE = "Learn World Countries"
 ROOT_WINDOW = "1280x720"  # reduce window to 720p after minimising
+# https://commons.wikimedia.org/wiki/File:BlankMap-World-large.png
 WORLD_COUNTRIES_IMG = "./assets/BlankMap-World-large.gif"  # file exported to .gif
 WORLD_COUNTRIES_WIDTH = 2800
 WORLD_COUNTRIES_HEIGHT = 1400
+# https://www.clipartmax.com/middle/m2i8d3H7N4N4N4K9_pin-2-google-maps-pin-png
 PIN_ICON = "./assets/map-pin-icon.gif"  # file exported to .gif
-PIN_STARTING_POSITION = (-180.0, -120.0)
+PIN_STARTING_POSITION = (-180.0,-120.0)
 
 
 class ControlsBar(tk.Frame):
@@ -25,7 +27,7 @@ class ControlsBar(tk.Frame):
         self.start_bttn = tk.Button(
             master=self,
             text="Start",
-            #command=
+            command=self.master.start_quiz
         ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Toggle fullscreen mode button.
@@ -57,6 +59,9 @@ class ControlsBar(tk.Frame):
             bd=3
         )
         self.answer_entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
+        self.answer_entry.config(state="disabled")
+        # Bind ENTER key w/ answer_entry.
+        root.bind("<Return>", (lambda event: self.get_user_input()))
 
         # Entry confirmation button.
         self.answer_bttn = tk.Button(
@@ -68,7 +73,8 @@ class ControlsBar(tk.Frame):
     def get_user_input(self):
         input_sv = self.answer_entry.get().title()
         self.clear_entry_field()
-        return input_sv
+        print(input_sv)
+#        return input_sv
 
     def clear_entry_field(self):
         self.answer_entry.delete(0, tk.END)
@@ -95,7 +101,7 @@ class Screen(tl.TurtleScreen):
         # Initialise a turtle and change it's shape into background graphics.
         t_world_countries = tl.RawTurtle(self, shape=WORLD_COUNTRIES_IMG)
 
-        # Get and print mouse click coordinates.
+        # Fetch and print mouse click coordinates.
         self.onclick(tk_h.get_tl_mouse_click_coords)
 
 
@@ -110,9 +116,12 @@ class TurtlePin(tl.RawTurtle):
         self.shape(PIN_ICON)
         self.speed("fastest")
         self.penup()
-        self.goto(PIN_STARTING_POSITION)
+        self.set_pin(coords=PIN_STARTING_POSITION)
         self.speed("slowest")
         self.showturtle()
+
+    def set_pin(self, coords):
+        self.goto(coords)
 
 
 class MainApplication(tk.Frame):
@@ -130,7 +139,12 @@ class MainApplication(tk.Frame):
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
 
+        self.t_pin = None
+
+    def start_quiz(self):
         self.t_pin = TurtlePin(master=self.screen)
+        self.controls_bar.answer_entry.config(state="normal")
+        self.controls_bar.answer_entry.focus_set()
 
 
 if __name__ == "__main__":
