@@ -75,6 +75,8 @@ class Screen(tl.TurtleScreen):
         self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
         self.addshape(WORLD_COUNTRIES_IMG)
         t_world_countries = tl.RawTurtle(self, shape=WORLD_COUNTRIES_IMG)
+        # Get and print mouse click coordinates.
+        self.onclick(tk_h.get_tl_mouse_click_coords)
 
 
 class MainApplication(tk.Frame):
