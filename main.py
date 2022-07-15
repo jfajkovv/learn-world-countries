@@ -19,6 +19,8 @@ class ControlsBar(tk.Frame):
     def __init__(self, master):
         super().__init__()
 
+        self.master = master
+
         # Quiz start button.
         self.start_bttn = tk.Button(
             master=self,
@@ -48,17 +50,28 @@ class ControlsBar(tk.Frame):
         ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # User entry prompt.
+        self.answer_sv = tk.StringVar()
         self.answer_entry = tk.Entry(
             master=self,
+            textvariable=self.answer_sv,
             bd=3
-        ).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
+        )
+        self.answer_entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
 
         # Entry confirmation button.
         self.answer_bttn = tk.Button(
             master=self,
             text="Answer",
-            #command
+            command=self.get_user_input
         ).pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+    def get_user_input(self):
+        input_sv = self.answer_entry.get().title()
+        self.clear_entry_field()
+        return input_sv
+
+    def clear_entry_field(self):
+        self.answer_entry.delete(0, tk.END)
 
 
 class ScrolledCanvas(tl.ScrolledCanvas):
