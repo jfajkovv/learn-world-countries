@@ -6,9 +6,11 @@ import turtle as tl
 # Handy global constants.
 APP_TITLE = "Learn World Countries"
 ROOT_WINDOW = "1280x720"  # reduce window to 720p after minimising
-WORLD_COUNTRIES_IMG = "./assets/BlankMap-World-large.gif"
+WORLD_COUNTRIES_IMG = "./assets/BlankMap-World-large.gif"  # file exported to .gif
 WORLD_COUNTRIES_WIDTH = 2800
 WORLD_COUNTRIES_HEIGHT = 1400
+PIN_ICON = "./assets/map-pin-icon.gif"  # file exported to .gif
+PIN_STARTING_POSITION = (-180.0, -120.0)
 
 
 class ControlsBar(tk.Frame):
@@ -69,14 +71,35 @@ class ScrolledCanvas(tl.ScrolledCanvas):
 class Screen(tl.TurtleScreen):
     """Background graphics and turtle aggregator."""
 
-    def __init__(self, cv):
-        super().__init__(cv)
+    def __init__(self, canvas):
+        super().__init__(canvas)
 
+        # Determine screen dimensions.
         self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
-        self.addshape(WORLD_COUNTRIES_IMG)
+
+        self.addshape(WORLD_COUNTRIES_IMG)  # load world map image
+        self.addshape(PIN_ICON)  # load pin image
+        # Initialise a turtle and change it's shape into background graphics.
         t_world_countries = tl.RawTurtle(self, shape=WORLD_COUNTRIES_IMG)
+
         # Get and print mouse click coordinates.
         self.onclick(tk_h.get_tl_mouse_click_coords)
+
+
+class TurtlePin(tl.RawTurtle):
+    """Moving turtle country indicator."""
+
+    def __init__(self, master):
+        super().__init__(master)
+
+        # Turtle pin setup.
+        self.hideturtle()
+        self.shape(PIN_ICON)
+        self.speed("fastest")
+        self.penup()
+        self.goto(PIN_STARTING_POSITION)
+        self.speed("slowest")
+        self.showturtle()
 
 
 class MainApplication(tk.Frame):
@@ -88,11 +111,13 @@ class MainApplication(tk.Frame):
         # Construct GUI components.
         self.controls_bar = ControlsBar(master=self)
         self.canvas = ScrolledCanvas(master=self)
-        self.screen = Screen(cv=self.canvas)
+        self.screen = Screen(canvas=self.canvas)
 
         # Place GUI components onto main frame.
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
+
+        self.t_pin = TurtlePin(master=self.screen)
 
 
 if __name__ == "__main__":
