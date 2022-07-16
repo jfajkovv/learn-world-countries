@@ -101,6 +101,13 @@ class ControlsBar(tk.Frame):
             correct_answer=country
         )
 
+        self.master.data_handler.fetch_next_country()
+        country = self.master.data_handler.next_country
+        self.master.countries_map.indicate_on_map(
+            country=country,
+            pin=self.master.t_pin
+        )
+
     def clear_entry_field(self):
         self.answer_entry.delete(0, tk.END)
 
@@ -188,6 +195,11 @@ class DataHandler(object):
     def validate_answer(self, user_answer, correct_answer):
         if user_answer == correct_answer:
             print(True)
+        else:
+            print(False)
+
+    def fetch_next_country(self):
+        self.next_country = self.draw_country(countries=self.all_countries)
 
 
 class MainApplication(tk.Frame):
@@ -199,15 +211,18 @@ class MainApplication(tk.Frame):
         # Construct GUI components.
 
         self.canvas = ScrolledCanvas(master=self)
-        self.screen = ScreenMap(master=self, canvas=self.canvas)
-        self.controls_bar = ControlsBar(master=self, countries_map=self.screen)
+        self.countries_map = ScreenMap(master=self, canvas=self.canvas)
+        self.controls_bar = ControlsBar(
+            master=self,
+            countries_map=self.countries_map
+        )
         self.data_handler = DataHandler(master=self)
 
         # Place GUI components onto main frame.
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
 
-        self.t_pin = TurtlePin(master=self.screen)
+        self.t_pin = TurtlePin(master=self.countries_map)
 
 
 if __name__ == "__main__":
