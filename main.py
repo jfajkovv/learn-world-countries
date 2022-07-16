@@ -112,6 +112,20 @@ class ControlsBar(tk.Frame):
         self.answer_entry.delete(0, tk.END)
 
 
+class StatusBar(tk.Frame):
+    """Information and score sub-frame."""
+
+    def __init__(self, master):
+        super().__init__()
+
+        self.master = master
+        self.known = 0
+        self.all = len(self.master.data_handler.all_countries)
+
+        self.status_lbl_txt = f"{self.known} / {self.all}"
+        self.status_lbl = tk.Label(master=self, text=self.status_lbl_txt).pack(side=tk.RIGHT, padx=5, pady=5)
+
+
 class ScrolledCanvas(tl.ScrolledCanvas):
     """Handy scrolled background container."""
 
@@ -203,24 +217,26 @@ class DataHandler(object):
 
 
 class MainApplication(tk.Frame):
-    """Application core structure"""
+    """Application core structure."""
 
     def __init__(self, master):
         super().__init__()
 
-        # Construct GUI components.
+        self.data_handler = DataHandler(master=self)
 
+        # Construct GUI components.
         self.canvas = ScrolledCanvas(master=self)
         self.countries_map = ScreenMap(master=self, canvas=self.canvas)
         self.controls_bar = ControlsBar(
             master=self,
             countries_map=self.countries_map
         )
-        self.data_handler = DataHandler(master=self)
+        self.status_bar = StatusBar(master=self)
 
         # Place GUI components onto main frame.
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
+        self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
         self.t_pin = TurtlePin(master=self.countries_map)
 
