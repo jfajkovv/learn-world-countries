@@ -165,7 +165,7 @@ class ScreenMap(tl.TurtleScreen):
             country=country,
             data_frame=self.master.data_handler.coords_data
         )
-        self.master.t_pin.set_pin(position=coords)
+        self.master.t_pin.set_pin(position=coords, shift=PIN_VERTICAL_SHIFT)
 
 
 class TurtlePin(tl.RawTurtle):
@@ -179,13 +179,28 @@ class TurtlePin(tl.RawTurtle):
         self.shape(PIN_ICON)
         self.speed("fastest")
         self.penup()
-        self.set_pin(position=PIN_STARTING_POSITION)
+        self.set_pin(position=PIN_STARTING_POSITION, shift=PIN_VERTICAL_SHIFT)
         self.speed("slowest")
 
-    def set_pin(self, position):
+    def set_pin(self, position, shift):
         xcoor = position[0]
-        ycoor = position[1] + PIN_VERTICAL_SHIFT
+        ycoor = position[1] + shift
         self.goto(xcoor, ycoor)
+
+
+class MarkGood(TurtlePin):
+    """Known country marker."""
+
+    def __init__(self, master):
+        super().__init__(master)
+
+        # Good answer marker setup.
+        self.hideturtle()
+        self.shape("circle")
+        self.color("green")
+        self.turtlesize(0.3)
+        self.speed("fastest")
+        self.penup()
 
 
 class DataHandler(object):
@@ -217,6 +232,9 @@ class DataHandler(object):
     def validate_answer(self, user_answer, correct_answer):
         if user_answer == correct_answer:
             print(True)
+            new_marker = MarkGood(master=self.master.countries_map)
+            new_marker.set_pin(position=self.fetch_country_coords(country=self.next_country, data_frame=self.coords_data), shift=0)
+            new_marker.showturtle()
             self.master.status_bar.inc_known()
             self.master.status_bar.update_status()
         else:
