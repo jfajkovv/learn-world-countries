@@ -119,11 +119,19 @@ class StatusBar(tk.Frame):
         super().__init__()
 
         self.master = master
-        self.known = 0
+        self.known = tk.IntVar().get()
         self.all = len(self.master.data_handler.all_countries)
 
         self.status_lbl_txt = f"{self.known} / {self.all}"
-        self.status_lbl = tk.Label(master=self, text=self.status_lbl_txt).pack(side=tk.RIGHT, padx=5, pady=5)
+        self.status_lbl = tk.Label(master=self, text=self.status_lbl_txt)
+        self.status_lbl.pack(side=tk.RIGHT)
+
+    def inc_known(self):
+        self.known += 1
+
+    def update_status(self):
+        new_value = f"{self.known} / {self.all}"
+        self.status_lbl.config(text=new_value)
 
 
 class ScrolledCanvas(tl.ScrolledCanvas):
@@ -187,11 +195,11 @@ class DataHandler(object):
     COORDS_DATA_FILE = "./assets/world_countries_coords.csv"
 
     def __init__(self, master):
+        self.master = master
+
         self.coords_data = pd.read_csv(DataHandler.COORDS_DATA_FILE)
         self.all_countries = self.coords_data.country.to_list()
         self.next_country = self.draw_country(countries=self.all_countries)
-
-        self.master = master
 
     # Randomly pick next country to learn.
     def draw_country(self, countries):
@@ -209,6 +217,8 @@ class DataHandler(object):
     def validate_answer(self, user_answer, correct_answer):
         if user_answer == correct_answer:
             print(True)
+            self.master.status_bar.inc_known()
+            self.master.status_bar.update_status()
         else:
             print(False)
 
