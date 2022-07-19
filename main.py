@@ -203,6 +203,21 @@ class MarkGood(TurtlePin):
         self.penup()
 
 
+class MarkWrong(TurtlePin):
+    """Unknown country marker."""
+
+    def __init__(self, master):
+        super().__init__(master)
+
+        # Wrong answer marker setup.
+        self.hideturtle()
+        self.shape("circle")
+        self.color("red")
+        self.turtlesize(0.3)
+        self.speed("fastest")
+        self.penup()
+
+
 class DataHandler(object):
     """This component is responsible for juggling app data."""
 
@@ -233,12 +248,23 @@ class DataHandler(object):
         if user_answer == correct_answer:
             print(True)
             new_marker = MarkGood(master=self.master.countries_map)
-            new_marker.set_pin(position=self.fetch_country_coords(country=self.next_country, data_frame=self.coords_data), shift=0)
+            new_marker_position = self.fetch_country_coords(
+                country=self.next_country,
+                data_frame=self.coords_data
+            )
+            new_marker.set_pin(position=new_marker_position, shift=0)
             new_marker.showturtle()
             self.master.status_bar.inc_known()
             self.master.status_bar.update_status()
         else:
             print(False)
+            new_marker = MarkWrong(master=self.master.countries_map)
+            new_marker_position = self.fetch_country_coords(
+                country=self.next_country,
+                data_frame=self.coords_data
+            )
+            new_marker.set_pin(position=new_marker_position, shift=0)
+            new_marker.showturtle()
 
     def fetch_next_country(self):
         self.next_country = self.draw_country(countries=self.all_countries)
