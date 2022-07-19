@@ -64,7 +64,6 @@ class ControlsBar(tk.Frame):
             bd=3
         )
         self.answer_entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=10)
-        self.answer_entry.config(state="disabled")
         # Bind ENTER key w/ answer_entry.
         root.bind("<Return>", (lambda event: self.get_user_input()))
 
@@ -75,7 +74,8 @@ class ControlsBar(tk.Frame):
             command=self.get_user_input
         )
         self.answer_bttn.pack(side=tk.LEFT, expand=True, fill=tk.X)
-        self.answer_bttn.config(state="disabled")
+
+        self.block_input()
 
     def start_quiz(self):
         self.master.t_pin.showturtle()
@@ -110,6 +110,10 @@ class ControlsBar(tk.Frame):
 
     def clear_entry_field(self):
         self.answer_entry.delete(0, tk.END)
+
+    def block_input(self):
+        self.answer_entry.config(state="disabled")
+        self.answer_bttn.config(state="disabled")
 
 
 class StatusBar(tk.Frame):
@@ -267,7 +271,12 @@ class DataHandler(object):
             new_marker.showturtle()
 
     def fetch_next_country(self):
-        self.next_country = self.draw_country(countries=self.all_countries)
+        try:
+            self.all_countries.remove(self.next_country)
+            self.next_country = self.draw_country(countries=self.all_countries)
+        except IndexError:
+            self.master.controls_bar.block_input()
+            self.master.t_pin.hideturtle()
 
 
 class MainApplication(tk.Frame):
