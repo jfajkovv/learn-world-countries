@@ -85,11 +85,9 @@ class ControlsBar(tk.Frame):
             pin=self.master.t_pin
         )
 
-        self.master.controls_bar.answer_entry.config(state="normal")
-        self.master.controls_bar.answer_entry.focus_set()
-        self.master.controls_bar.answer_bttn.config(state="normal")
+        self.enable_input()
 
-        self.master.controls_bar.start_bttn.config(state="disabled")
+        self.start_bttn.config(state="disabled")
 
     def get_user_input(self):
         input_sv = self.answer_entry.get().title()
@@ -114,6 +112,11 @@ class ControlsBar(tk.Frame):
     def block_input(self):
         self.answer_entry.config(state="disabled")
         self.answer_bttn.config(state="disabled")
+
+    def enable_input(self):
+        self.answer_entry.config(state="normal")
+        self.answer_bttn.config(state="normal")
+        self.answer_entry.focus_set()
 
 
 class StatusBar(tk.Frame):
