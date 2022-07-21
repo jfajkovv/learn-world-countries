@@ -9,7 +9,8 @@ from random import choice
 APP_TITLE = "Learn World Countries"
 ROOT_WINDOW = "1280x720"  # reduce window to 720p after minimising
 # https://commons.wikimedia.org/wiki/File:BlankMap-World-large.png
-WORLD_COUNTRIES_IMG = "./assets/BlankMap-World-large.gif"  # file exported to .gif
+WORLD_COUNTRIES_BLANK_IMG = "./assets/BlankMap-World-large.gif"
+WORLD_COUNTRIES_NAMED_IMG = "./assets/NamedMap-World-large.gif"
 WORLD_COUNTRIES_WIDTH = 2800
 WORLD_COUNTRIES_HEIGHT = 1400
 # https://www.clipartmax.com/middle/m2i8d3H7N4N4N4K9_pin-2-google-maps-pin-png
@@ -78,6 +79,8 @@ class ControlsBar(tk.Frame):
         self.block_input()
 
     def start_quiz(self):
+        self.master.countries_map.set_up_blank()
+
         self.master.t_pin.showturtle()
 
         self.countries_map.indicate_on_map(
@@ -155,17 +158,28 @@ class ScreenMap(tl.TurtleScreen):
         super().__init__(canvas)
 
         self.master = master
+        self.t_world_countries = None
 
         # Determine screen dimensions.
         self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
 
-        self.addshape(WORLD_COUNTRIES_IMG)  # load world map image
+        self.addshape(WORLD_COUNTRIES_BLANK_IMG)  # load blank world map image
+        self.addshape(WORLD_COUNTRIES_NAMED_IMG)  # load named world map image
         self.addshape(PIN_ICON)  # load pin image
-        # Initialise a turtle and change it's shape into background graphics.
-        t_world_countries = tl.RawTurtle(self, shape=WORLD_COUNTRIES_IMG)
 
         # Fetch and print mouse click coordinates.
         self.onclick(tk_h.get_tl_mouse_click_coords)
+
+        self.set_up_named()
+
+    def set_up_named(self):
+        self.t_world_countries = tl.RawTurtle(
+            self,
+            shape=WORLD_COUNTRIES_NAMED_IMG
+        )
+
+    def set_up_blank(self):
+        self.t_world_countries.shape(WORLD_COUNTRIES_BLANK_IMG)
 
     def indicate_on_map(self, country, pin):
         coords = self.master.data_handler.fetch_country_coords(
