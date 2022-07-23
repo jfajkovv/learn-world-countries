@@ -152,6 +152,12 @@ class ScrolledCanvas(tl.ScrolledCanvas):
 class ScreenMap(tl.TurtleScreen):
     """Background graphics and turtle aggregator."""
 
+    MARKERS = {
+        "normal": 1,
+        "small": 0.5,
+        "tiny": 0.3
+    }
+
     def __init__(self, master, canvas):
         super().__init__(canvas)
 
@@ -183,10 +189,11 @@ class ScreenMap(tl.TurtleScreen):
         )
 
     def indicate_on_map(self, country, pin):
-        coords = self.master.data_handler.fetch_country_coords(
-            country=country,
+        country_data = self.master.data_handler.fetch_country_data(
+            country=self.master.data_handler.next_country,
             data_frame=self.master.data_handler.coords_data
         )
+        coords = self.master.data_handler.fetch_country_coords(data=country_data)
         self.master.t_pin.set_pin(position=coords, shift=PIN_VERTICAL_SHIFT)
 
 
@@ -213,14 +220,16 @@ class TurtlePin(tl.RawTurtle):
 class MarkGood(TurtlePin):
     """Known country marker."""
 
-    def __init__(self, master):
+    def __init__(self, master, marker):
         super().__init__(master)
+
+        self.master = master
 
         # Good answer marker setup.
         self.hideturtle()
         self.shape("circle")
         self.color("green")
-        self.turtlesize(0.3)
+        self.turtlesize(marker)
         self.speed("fastest")
         self.penup()
 
@@ -258,21 +267,34 @@ class DataHandler(object):
         drawn_country = choice(countries)
         return drawn_country
 
-    # Fetch given country coords.
-    def fetch_country_coords(self, country, data_frame):
+    def fetch_country_data(self, country, data_frame):
         country_data = data_frame[data_frame.country == country]
-        country_xcoor = country_data.xcoor
-        country_ycoor = country_data.ycoor
-        return (float(country_xcoor), float(country_ycoor))
+        return country_data
+
+    def fetch_country_coords(self, data):
+        country_xcoor = data.xcoor
+        country_ycoor = data.ycoor
+        country_coords = (float(country_xcoor), float(country_ycoor))
+        return country_coords
+
+    def fetch_country_marker(self, data):
+        country_marker = data.marker.to_string(index=False)
+        country_marker_size = self.master.countries_map.MARKERS[country_marker]
+        return country_marker_size
 
     # Check if the user knows correct country name.
     def validate_answer(self, user_answer, correct_answer):
         if user_answer == correct_answer:
             print(True)
-            new_marker = MarkGood(master=self.master.countries_map)
-            new_marker_position = self.fetch_country_coords(
+            new_country_data = self.fetch_country_data(
                 country=self.next_country,
                 data_frame=self.coords_data
+            )
+            new_marker_position = self.fetch_country_coords(data=new_country_data)
+            new_marker_marker = self.fetch_country_marker(data=new_country_data)
+            new_marker = MarkGood(
+                master=self.master.countries_map,
+                marker=new_marker_marker
             )
             new_marker.set_pin(position=new_marker_position, shift=0)
             new_marker.showturtle()
