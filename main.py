@@ -17,6 +17,11 @@ WORLD_COUNTRIES_HEIGHT = 2048
 PIN_ICON = "./assets/map-pin-icon.gif"  # file exported to .gif
 PIN_STARTING_POSITION = (-180.0,-120.0)
 PIN_VERTICAL_SHIFT = 15  # so it points sharply onto the given country
+FONT = "Arial"
+FONT_SIZE = 20
+MARKER_FONT = (FONT, FONT_SIZE, "normal")
+GOOD_MARKER_FONT = (FONT, FONT_SIZE, "italic")
+WRONG_MARKER_FONT = (FONT, FONT_SIZE, "bold")
 
 
 class ControlsBar(tk.Frame):
@@ -220,10 +225,12 @@ class TurtlePin(tl.RawTurtle):
 class MarkGood(TurtlePin):
     """Known country marker."""
 
-    def __init__(self, master, marker):
+    def __init__(self, master, name, marker):
         super().__init__(master)
 
         self.master = master
+        self.name = name
+        self.marker = marker
 
         # Good answer marker setup.
         self.hideturtle()
@@ -232,21 +239,29 @@ class MarkGood(TurtlePin):
         self.turtlesize(marker)
         self.speed("fastest")
         self.penup()
+        self.onclick(
+            fun=self.display_name,
+            btn=1
+        )
+
+    def display_name(self, x, y):
+        self.turtlesize(0.1)
+        self.write(self.name, font=GOOD_MARKER_FONT)
+        self.master.master.after(5000, self.display_animation)
+
+    def display_animation(self):
+        self.clear()
+        self.turtlesize(self.marker)
 
 
-class MarkWrong(TurtlePin):
+class MarkWrong(MarkGood):
     """Unknown country marker."""
 
-    def __init__(self, master, marker):
-        super().__init__(master)
+    def __init__(self, master, name, marker):
+        super().__init__(master, name, marker)
 
         # Wrong answer marker setup.
-        self.hideturtle()
-        self.shape("circle")
         self.color("red")
-        self.turtlesize(marker)
-        self.speed("fastest")
-        self.penup()
 
 
 class DataHandler(object):
@@ -290,10 +305,12 @@ class DataHandler(object):
                 country=self.next_country,
                 data_frame=self.coords_data
             )
+            new_good_name = self.next_country
             new_good_position = self.fetch_country_coords(data=new_good_data)
             new_good_marker = self.fetch_country_marker(data=new_good_data)
             new_good_marker = MarkGood(
                 master=self.master.countries_map,
+                name=new_good_name,
                 marker=new_good_marker
             )
             new_good_marker.set_pin(position=new_good_position, shift=0)
@@ -306,10 +323,12 @@ class DataHandler(object):
                 country=self.next_country,
                 data_frame=self.coords_data
             )
+            new_wrong_name = self.next_country
             new_wrong_position = self.fetch_country_coords(data=new_wrong_data)
             new_wrong_marker = self.fetch_country_marker(data=new_wrong_data)
             new_wrong_marker = MarkWrong(
                 master=self.master.countries_map,
+                name=new_wrong_name,
                 marker=new_wrong_marker
             )
             new_wrong_marker.set_pin(position=new_wrong_position, shift=0)
