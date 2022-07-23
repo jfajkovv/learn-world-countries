@@ -10,9 +10,9 @@ APP_TITLE = "Learn World Countries"
 ROOT_WINDOW = "1280x720"  # reduce window to 720p after minimising
 # https://commons.wikimedia.org/wiki/File:BlankMap-World-large.png
 WORLD_COUNTRIES_BLANK_IMG = "./assets/BlankMap-World-large.gif"
-WORLD_COUNTRIES_NAMED_IMG = "./assets/NamedMap-World-large.gif"
-WORLD_COUNTRIES_WIDTH = 2800
-WORLD_COUNTRIES_HEIGHT = 1400
+#WORLD_COUNTRIES_NAMED_IMG = "./assets/NamedMap-World-large.gif"
+WORLD_COUNTRIES_WIDTH = 4096
+WORLD_COUNTRIES_HEIGHT = 2048
 # https://www.clipartmax.com/middle/m2i8d3H7N4N4N4K9_pin-2-google-maps-pin-png
 PIN_ICON = "./assets/map-pin-icon.gif"  # file exported to .gif
 PIN_STARTING_POSITION = (-180.0,-120.0)
@@ -79,8 +79,6 @@ class ControlsBar(tk.Frame):
         self.block_input()
 
     def start_quiz(self):
-        self.master.countries_map.set_up_blank()
-
         self.master.t_pin.showturtle()
 
         self.countries_map.indicate_on_map(
@@ -164,22 +162,25 @@ class ScreenMap(tl.TurtleScreen):
         self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
 
         self.addshape(WORLD_COUNTRIES_BLANK_IMG)  # load blank world map image
-        self.addshape(WORLD_COUNTRIES_NAMED_IMG)  # load named world map image
+#        self.addshape(WORLD_COUNTRIES_NAMED_IMG)  # load named world map image
         self.addshape(PIN_ICON)  # load pin image
 
         # Fetch and print mouse click coordinates.
         self.onclick(tk_h.get_tl_mouse_click_coords)
 
-        self.set_up_named()
+        self.set_up_blank()
 
-    def set_up_named(self):
-        self.t_world_countries = tl.RawTurtle(
-            self,
-            shape=WORLD_COUNTRIES_NAMED_IMG
-        )
+#    def set_up_named(self):
+#        self.t_world_countries = tl.RawTurtle(
+#            self,
+#            shape=WORLD_COUNTRIES_NAMED_IMG
+#        )
 
     def set_up_blank(self):
-        self.t_world_countries.shape(WORLD_COUNTRIES_BLANK_IMG)
+        self.t_world_countries = tl.RawTurtle(
+            self,
+            shape=WORLD_COUNTRIES_BLANK_IMG
+        )
 
     def indicate_on_map(self, country, pin):
         coords = self.master.data_handler.fetch_country_coords(
