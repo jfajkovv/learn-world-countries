@@ -237,14 +237,14 @@ class MarkGood(TurtlePin):
 class MarkWrong(TurtlePin):
     """Unknown country marker."""
 
-    def __init__(self, master):
+    def __init__(self, master, marker):
         super().__init__(master)
 
         # Wrong answer marker setup.
         self.hideturtle()
         self.shape("circle")
         self.color("red")
-        self.turtlesize(0.3)
+        self.turtlesize(marker)
         self.speed("fastest")
         self.penup()
 
@@ -286,29 +286,34 @@ class DataHandler(object):
     def validate_answer(self, user_answer, correct_answer):
         if user_answer == correct_answer:
             print(True)
-            new_country_data = self.fetch_country_data(
+            new_good_data = self.fetch_country_data(
                 country=self.next_country,
                 data_frame=self.coords_data
             )
-            new_marker_position = self.fetch_country_coords(data=new_country_data)
-            new_marker_marker = self.fetch_country_marker(data=new_country_data)
-            new_marker = MarkGood(
+            new_good_position = self.fetch_country_coords(data=new_good_data)
+            new_good_marker = self.fetch_country_marker(data=new_good_data)
+            new_good_marker = MarkGood(
                 master=self.master.countries_map,
-                marker=new_marker_marker
+                marker=new_good_marker
             )
-            new_marker.set_pin(position=new_marker_position, shift=0)
-            new_marker.showturtle()
+            new_good_marker.set_pin(position=new_good_position, shift=0)
+            new_good_marker.showturtle()
             self.master.status_bar.inc_known()
             self.master.status_bar.update_status()
         else:
             print(False)
-            new_marker = MarkWrong(master=self.master.countries_map)
-            new_marker_position = self.fetch_country_coords(
+            new_wrong_data = self.fetch_country_data(
                 country=self.next_country,
                 data_frame=self.coords_data
             )
-            new_marker.set_pin(position=new_marker_position, shift=0)
-            new_marker.showturtle()
+            new_wrong_position = self.fetch_country_coords(data=new_wrong_data)
+            new_wrong_marker = self.fetch_country_marker(data=new_wrong_data)
+            new_wrong_marker = MarkWrong(
+                master=self.master.countries_map,
+                marker=new_wrong_marker
+            )
+            new_wrong_marker.set_pin(position=new_wrong_position, shift=0)
+            new_wrong_marker.showturtle()
 
     def fetch_next_country(self):
         try:
