@@ -84,6 +84,8 @@ class ControlsBar(tk.Frame):
         self.block_input()
 
     def start_quiz(self):
+        self.master.countries_map.hide_markers()
+
         self.master.t_pin.showturtle()
 
         self.countries_map.indicate_on_map(
@@ -168,6 +170,7 @@ class ScreenMap(tl.TurtleScreen):
 
         self.master = master
         self.t_world_countries = None
+        self.edu_markers = []
 
         # Determine screen dimensions.
         self.screensize(WORLD_COUNTRIES_WIDTH, WORLD_COUNTRIES_HEIGHT)
@@ -200,6 +203,33 @@ class ScreenMap(tl.TurtleScreen):
         )
         coords = self.master.data_handler.fetch_country_coords(data=country_data)
         self.master.t_pin.set_pin(position=coords, shift=PIN_VERTICAL_SHIFT)
+
+    def generate_markers(self):
+        all_countries = self.master.data_handler.all_countries
+        for country in all_countries:
+            new_marker_data = self.master.data_handler.fetch_country_data(
+                country=country,
+                data_frame=self.master.data_handler.coords_data
+            )
+            new_marker_name = country
+            new_marker_position = self.master.data_handler.fetch_country_coords(
+                data=new_marker_data
+            )
+            new_marker_marker = self.master.data_handler.fetch_country_marker(
+                data=new_marker_data
+            )
+            new_marker = MarkCountry(
+                master=self,
+                name=new_marker_name,
+                marker=new_marker_marker
+            )
+            new_marker.set_pin(position=new_marker_position, shift=0)
+            new_marker.showturtle()
+            self.edu_markers.append(new_marker)
+
+    def hide_markers(self):
+        for marker in self.edu_markers:
+            marker.hideturtle()
 
 
 class TurtlePin(tl.RawTurtle):
@@ -238,7 +268,6 @@ class MarkGood(TurtlePin):
         self.color("green")
         self.turtlesize(marker)
         self.speed("fastest")
-        self.penup()
         self.onclick(
             fun=self.display_name,
             btn=1
@@ -262,6 +291,16 @@ class MarkWrong(MarkGood):
 
         # Wrong answer marker setup.
         self.color("red")
+
+
+class MarkCountry(MarkGood):
+    """Neutral country marker."""
+
+    def __init__(self, master, name, marker):
+        super().__init__(master, name, marker)
+
+        # Neutral marker color.
+        self.color("midnight blue")
 
 
 class DataHandler(object):
@@ -364,6 +403,8 @@ class MainApplication(tk.Frame):
         self.controls_bar.pack(side=tk.TOP, fill=tk.X)
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
+
+        self.countries_map.generate_markers()
 
         self.t_pin = TurtlePin(master=self.countries_map)
 
