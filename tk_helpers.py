@@ -13,9 +13,9 @@ def get_screen_size():
 
 
 def get_tl_mouse_click_coords(x, y):
-    """Fetch mouse click coordinates from turtle's screen."""
-    coor = f"{x},{y}"
-    print(coor)
+    """View mouse click coordinates from turtle's screen."""
+    coords = f"{x},{y}\n"
+    print(coords)
 
 
 def toggle_fscreen(master):

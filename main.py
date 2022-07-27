@@ -179,10 +179,10 @@ class ScreenMap(tl.TurtleScreen):
 #        self.addshape(WORLD_COUNTRIES_NAMED_IMG)  # load named world map image
         self.addshape(PIN_ICON)  # load pin image
 
-        # Fetch and print mouse click coordinates.
-        self.onclick(tk_h.get_tl_mouse_click_coords)
-
         self.set_up_blank()
+
+        # Fetch and display mouce click coordinates.
+        self.onclick(tk_h.get_tl_mouse_click_coords)
 
 #    def set_up_named(self):
 #        self.t_world_countries = tl.RawTurtle(
