@@ -4,6 +4,7 @@ import tk_helpers as tk_h
 import turtle as tl
 import pandas as pd
 from random import choice
+from time import sleep
 
 # Handy global constants.
 APP_TITLE = "Learn World Countries"
@@ -40,6 +41,12 @@ class ControlsBar(tk.Frame):
             command=self.start_quiz
         )
         self.start_bttn.pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+        self.gen_markers_bttn = tk.Button(
+            master=self,
+            text="Generate markers",
+            command=self.master.countries_map.generate_markers
+        ).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
         # Toggle fullscreen mode button.
         self.fscreen_bttn = tk.Button(
@@ -205,6 +212,7 @@ class ScreenMap(tl.TurtleScreen):
         self.master.t_pin.set_pin(position=coords, shift=PIN_VERTICAL_SHIFT)
 
     def generate_markers(self):
+        self.master.controls_bar.start_bttn.config(state="disabled")
         all_countries = self.master.data_handler.all_countries
         for country in all_countries:
             new_marker_data = self.master.data_handler.fetch_country_data(
@@ -226,6 +234,7 @@ class ScreenMap(tl.TurtleScreen):
             new_marker.set_pin(position=new_marker_position, shift=0)
             new_marker.showturtle()
             self.edu_markers.append(new_marker)
+        self.master.controls_bar.start_bttn.config(state="normal")
 
     def hide_markers(self):
         for marker in self.edu_markers:
@@ -404,7 +413,7 @@ class MainApplication(tk.Frame):
         self.canvas.pack(side=tk.TOP, expand=True, fill=tk.BOTH)
         self.status_bar.pack(side=tk.BOTTOM, fill=tk.X)
 
-        self.countries_map.generate_markers()
+#        self.countries_map.generate_markers()
 
         self.t_pin = TurtlePin(master=self.countries_map)
 
